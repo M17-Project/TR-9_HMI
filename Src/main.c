@@ -52,7 +52,8 @@ UART_HandleTypeDef huart2;
 
 /* USER CODE BEGIN PV */
 uint8_t pin=0;				//for pin scanning
-uint8_t pressed=0;
+uint8_t pressed=0;			//button being pressed?
+uint8_t enc=0;				//encoder position
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -184,12 +185,14 @@ int main(void)
   /* USER CODE BEGIN 2 */
   GPIOA->BSRR=(1<<(5+16))|(1<<(6+16))|(1<<(7+16));
   HAL_TIM_Base_Start_IT(&htim2);
+  HAL_TIM_Encoder_Start(&htim21, TIM_CHANNEL_ALL);
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+	  enc=(TIM21->CNT)>>2;
 	  last=GPIOB->IDR&((1<<5)|(1<<4));
 	  HAL_Delay(1);
 	  if(!(GPIOB->IDR&(1<<5)) && (last&(1<<5)))	//falling edge on B1
@@ -309,7 +312,7 @@ static void MX_TIM21_Init(void)
   htim21.Init.CounterMode = TIM_COUNTERMODE_UP;
   htim21.Init.Period = 47;
   htim21.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
-  sConfig.EncoderMode = TIM_ENCODERMODE_TI1;
+  sConfig.EncoderMode = TIM_ENCODERMODE_TI12;
   sConfig.IC1Polarity = TIM_ICPOLARITY_RISING;
   sConfig.IC1Selection = TIM_ICSELECTION_DIRECTTI;
   sConfig.IC1Prescaler = TIM_ICPSC_DIV1;
