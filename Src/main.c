@@ -53,7 +53,8 @@ UART_HandleTypeDef huart2;
 /* USER CODE BEGIN PV */
 uint8_t pin=0;				//for pin scanning
 uint8_t pressed=0;			//button being pressed?
-uint8_t enc=0;				//encoder position
+
+int8_t enc_now=0;			//encoder position
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -186,19 +187,32 @@ int main(void)
   GPIOA->BSRR=(1<<(5+16))|(1<<(6+16))|(1<<(7+16));
   HAL_TIM_Base_Start_IT(&htim2);
   HAL_TIM_Encoder_Start(&htim21, TIM_CHANNEL_ALL);
+  TIM21->CNT=23;
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-  while (1)
+  while(1)
   {
-	  enc=(TIM21->CNT)>>2;
+	  enc_now=TIM21->CNT;
+
+	  if(enc_now>=23+4)
+	  {
+		  TIM21->CNT=23;
+		  HAL_UART_Transmit(&huart2, "L", 1, 100);
+	  }
+	  else if(enc_now<=23-4)
+	  {
+		  TIM21->CNT=23;
+		  HAL_UART_Transmit(&huart2, "R", 1, 100);
+	  }
+
 	  last=GPIOB->IDR&((1<<5)|(1<<4));
 	  HAL_Delay(1);
 	  if(!(GPIOB->IDR&(1<<5)) && (last&(1<<5)))	//falling edge on B1
-		  HAL_UART_Transmit(&huart2, "L", 1, 100);
+		  HAL_UART_Transmit(&huart2, "A", 1, 100);
 	  else if(!(GPIOB->IDR&(1<<4)) && (last&(1<<4)))	//falling edge on B2
-		  HAL_UART_Transmit(&huart2, "R", 1, 100);
+		  HAL_UART_Transmit(&huart2, "B", 1, 100);
   /* USER CODE END WHILE */
 
   /* USER CODE BEGIN 3 */
