@@ -27,7 +27,7 @@ Src/%.o: ../Src/%.c
 	@echo 'Building file: $<'
 	@echo 'Invoking: MCU GCC Compiler'
 	@echo $(PWD)
-	arm-none-eabi-gcc -mcpu=cortex-m0plus -mthumb -mfloat-abi=soft '-D__weak=__attribute__((weak))' '-D__packed=__attribute__((__packed__))' -DUSE_HAL_DRIVER -DSTM32L011xx -I"C:/Users/Pawe³ Wójcicki/Desktop/HMI/Inc" -I"C:/Users/Pawe³ Wójcicki/Desktop/HMI/Drivers/STM32L0xx_HAL_Driver/Inc" -I"C:/Users/Pawe³ Wójcicki/Desktop/HMI/Drivers/STM32L0xx_HAL_Driver/Inc/Legacy" -I"C:/Users/Pawe³ Wójcicki/Desktop/HMI/Drivers/CMSIS/Device/ST/STM32L0xx/Include" -I"C:/Users/Pawe³ Wójcicki/Desktop/HMI/Drivers/CMSIS/Include"  -O2 -g3 -Wall -fmessage-length=0 -ffunction-sections -c -fmessage-length=0 -MMD -MP -MF"$(@:%.o=%.d)" -MT"$@" -o "$@" "$<"
+	arm-none-eabi-gcc -mcpu=cortex-m0plus -mthumb -mfloat-abi=soft '-D__weak=__attribute__((weak))' '-D__packed=__attribute__((__packed__))' -DUSE_HAL_DRIVER -DSTM32L011xx -I"C:/Users/SP5WWP/Documents/TR-9_KBD/Inc" -I"C:/Users/SP5WWP/Documents/TR-9_KBD/Drivers/STM32L0xx_HAL_Driver/Inc" -I"C:/Users/SP5WWP/Documents/TR-9_KBD/Drivers/STM32L0xx_HAL_Driver/Inc/Legacy" -I"C:/Users/SP5WWP/Documents/TR-9_KBD/Drivers/CMSIS/Device/ST/STM32L0xx/Include" -I"C:/Users/SP5WWP/Documents/TR-9_KBD/Drivers/CMSIS/Include"  -O2 -g3 -Wall -fmessage-length=0 -ffunction-sections -c -fmessage-length=0 -MMD -MP -MF"$(@:%.o=%.d)" -MT"$@" -o "$@" "$<"
 	@echo 'Finished building: $<'
 	@echo ' '
 
