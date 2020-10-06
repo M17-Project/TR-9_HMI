@@ -116,60 +116,60 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 {
-	if(((GPIOA->IDR)&GPIO_Pin) && !pressed)
+	if( (!(GPIOA->IDR)&GPIO_Pin) && !pressed)
 	{
-		if(GPIO_Pin==(1<<4))	//row 1 (from the bottom)
+		if(GPIO_Pin==(1<<4))		//row 1 (from the bottom)
 		{
-			if(GPIOA->ODR&(1<<1))
+			if((!(GPIOA->ODR))&(1<<1))
 				HAL_UART_Transmit(&huart2, "*", 1, TIMEOUT);
-			else if(GPIOA->ODR&(1<<2))
+			else if((!(GPIOA->ODR))&(1<<2))
 				HAL_UART_Transmit(&huart2, "0", 1, TIMEOUT);
-			else if(GPIOA->ODR&(1<<3))
+			else if((!(GPIOA->ODR))&(1<<3))
 				HAL_UART_Transmit(&huart2, "#", 1, TIMEOUT);
 		}
 		else if(GPIO_Pin==(1<<5))	//row 2
 		{
-			if(GPIOA->ODR&(1<<1))
+			if((!(GPIOA->ODR))&(1<<1))
 				HAL_UART_Transmit(&huart2, "1", 1, TIMEOUT);
-			else if(GPIOA->ODR&(1<<2))
+			else if((!(GPIOA->ODR))&(1<<2))
 				HAL_UART_Transmit(&huart2, "2", 1, TIMEOUT);
-			else if(GPIOA->ODR&(1<<3))
+			else if((!(GPIOA->ODR))&(1<<3))
 				HAL_UART_Transmit(&huart2, "3", 1, TIMEOUT);
 		}
 		else if(GPIO_Pin==(1<<6))	//row 3
 		{
-			if(GPIOA->ODR&(1<<1))
+			if((!(GPIOA->ODR))&(1<<1))
 				HAL_UART_Transmit(&huart2, "4", 1, TIMEOUT);
-			else if(GPIOA->ODR&(1<<2))
+			else if((!(GPIOA->ODR))&(1<<2))
 				HAL_UART_Transmit(&huart2, "5", 1, TIMEOUT);
-			else if(GPIOA->ODR&(1<<3))
+			else if((!(GPIOA->ODR))&(1<<3))
 				HAL_UART_Transmit(&huart2, "6", 1, TIMEOUT);
 		}
 		else if(GPIO_Pin==(1<<7))	//row 4
 		{
-			if(GPIOA->ODR&(1<<1))
+			if((!(GPIOA->ODR))&(1<<1))
 				HAL_UART_Transmit(&huart2, "7", 1, TIMEOUT);
-			else if(GPIOA->ODR&(1<<2))
+			else if((!(GPIOA->ODR))&(1<<2))
 				HAL_UART_Transmit(&huart2, "8", 1, TIMEOUT);
-			else if(GPIOA->ODR&(1<<3))
+			else if((!(GPIOA->ODR))&(1<<3))
 				HAL_UART_Transmit(&huart2, "9", 1, TIMEOUT);
 		}
 		else if(GPIO_Pin==(1<<8))	//row 5
 		{
-			if(GPIOA->ODR&(1<<1))
+			if((!(GPIOA->ODR))&(1<<1))
 				HAL_UART_Transmit(&huart2, "L", 1, TIMEOUT);	//Left
-			else if(GPIOA->ODR&(1<<2))
+			else if((!(GPIOA->ODR))&(1<<2))
 				HAL_UART_Transmit(&huart2, "D", 1, TIMEOUT);	//Down
-			else if(GPIOA->ODR&(1<<3))
+			else if((!(GPIOA->ODR))&(1<<3))
 				HAL_UART_Transmit(&huart2, "R", 1, TIMEOUT);	//Right
 		}
 		else if(GPIO_Pin==(1<<9))	//row 6
 		{
-			if(GPIOA->ODR&(1<<1))
+			if((!(GPIOA->ODR))&(1<<1))
 				HAL_UART_Transmit(&huart2, "A", 1, TIMEOUT);
-			else if(GPIOA->ODR&(1<<2))
+			else if((!(GPIOA->ODR))&(1<<2))
 				HAL_UART_Transmit(&huart2, "U", 1, TIMEOUT);
-			else if(GPIOA->ODR&(1<<3))
+			else if((!(GPIOA->ODR))&(1<<3))
 				HAL_UART_Transmit(&huart2, "B", 1, TIMEOUT);
 		}
 		else if(GPIO_Pin==(1<<10))	//F1 press
