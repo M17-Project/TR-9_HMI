@@ -1,4 +1,4 @@
-
+/* USER CODE BEGIN Header */
 /**
   ******************************************************************************
   * @file           : main.c
@@ -10,7 +10,7 @@
   * inserted by the user or by software development tools
   * are owned by their respective copyright owners.
   *
-  * COPYRIGHT(c) 2019 STMicroelectronics
+  * COPYRIGHT(c) 2020 STMicroelectronics
   *
   * Redistribution and use in source and binary forms, with or without modification,
   * are permitted provided that the following conditions are met:
@@ -36,38 +36,51 @@
   *
   ******************************************************************************
   */
+/* USER CODE END Header */
+
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
-#include "stm32l0xx_hal.h"
 
+/* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#define TIMEOUT			20		//UART timeout (ms)
 /* USER CODE END Includes */
+
+/* Private typedef -----------------------------------------------------------*/
+/* USER CODE BEGIN PTD */
+
+/* USER CODE END PTD */
+
+/* Private define ------------------------------------------------------------*/
+/* USER CODE BEGIN PD */
+
+/* USER CODE END PD */
+
+/* Private macro -------------------------------------------------------------*/
+/* USER CODE BEGIN PM */
+
+/* USER CODE END PM */
 
 /* Private variables ---------------------------------------------------------*/
 TIM_HandleTypeDef htim2;
-TIM_HandleTypeDef htim21;
 
 UART_HandleTypeDef huart2;
 
 /* USER CODE BEGIN PV */
 uint8_t pin=0;				//for pin scanning
 uint8_t pressed=0;			//button being pressed?
-
-int8_t enc_now=0;			//encoder position
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
 static void MX_USART2_UART_Init(void);
-static void MX_TIM21_Init(void);
 static void MX_TIM2_Init(void);
-
 /* USER CODE BEGIN PFP */
 
 /* USER CODE END PFP */
 
+/* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 {
@@ -76,25 +89,26 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 		pin++;
 		pin%=3;
 
+		//set low on selected pin
 		switch(pin)
 		{
 			case 0:
-				GPIOA->BSRR=(1<<5);
-				GPIOA->BSRR=(1<<(6+16))|(1<<(7+16));
+				GPIOA->BSRR=(1<<(1+16));
+				GPIOA->BSRR=(1<<2)|(1<<3);
 			break;
 
 			case 1:
-				GPIOA->BSRR=(1<<6);
-				GPIOA->BSRR=(1<<(5+16))|(1<<(7+16));
+				GPIOA->BSRR=(1<<(2+16));
+				GPIOA->BSRR=(1<<1)|(1<<3);
 			break;
 
 			case 2:
-				GPIOA->BSRR=(1<<7);
-				GPIOA->BSRR=(1<<(5+16))|(1<<(6+16));
+				GPIOA->BSRR=(1<<(3+16));
+				GPIOA->BSRR=(1<<1)|(1<<2);
 			break;
 
 			default:
-				GPIOA->BSRR=(1<<(5+16))|(1<<(6+16))|(1<<(7+16));
+				GPIOA->BSRR=(1<<1)|(1<<2)|(1<<3);
 			break;
 		}
 	}
@@ -104,42 +118,69 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 {
 	if(((GPIOA->IDR)&GPIO_Pin) && !pressed)
 	{
-		if(GPIO_Pin==(1<<1))
+		if(GPIO_Pin==(1<<4))	//row 1 (from the bottom)
 		{
-			if(GPIOA->ODR&(1<<5))	//row 1
-				HAL_UART_Transmit(&huart2, "7", 1, 100);
-			else if(GPIOA->ODR&(1<<6))
-				HAL_UART_Transmit(&huart2, "8", 1, 100);
-			else if(GPIOA->ODR&(1<<7))
-				HAL_UART_Transmit(&huart2, "9", 1, 100);
+			if(GPIOA->ODR&(1<<1))
+				HAL_UART_Transmit(&huart2, "*", 1, TIMEOUT);
+			else if(GPIOA->ODR&(1<<2))
+				HAL_UART_Transmit(&huart2, "0", 1, TIMEOUT);
+			else if(GPIOA->ODR&(1<<3))
+				HAL_UART_Transmit(&huart2, "#", 1, TIMEOUT);
 		}
-		else if(GPIO_Pin==(1<<2))	//row 2
+		else if(GPIO_Pin==(1<<5))	//row 2
 		{
-			if(GPIOA->ODR&(1<<5))
-				HAL_UART_Transmit(&huart2, "4", 1, 100);
-			else if(GPIOA->ODR&(1<<6))
-				HAL_UART_Transmit(&huart2, "5", 1, 100);
-			else if(GPIOA->ODR&(1<<7))
-				HAL_UART_Transmit(&huart2, "6", 1, 100);
+			if(GPIOA->ODR&(1<<1))
+				HAL_UART_Transmit(&huart2, "1", 1, TIMEOUT);
+			else if(GPIOA->ODR&(1<<2))
+				HAL_UART_Transmit(&huart2, "2", 1, TIMEOUT);
+			else if(GPIOA->ODR&(1<<3))
+				HAL_UART_Transmit(&huart2, "3", 1, TIMEOUT);
 		}
-		else if(GPIO_Pin==(1<<3))	//row 3
+		else if(GPIO_Pin==(1<<6))	//row 3
 		{
-			if(GPIOA->ODR&(1<<5))
-				HAL_UART_Transmit(&huart2, "1", 1, 100);
-			else if(GPIOA->ODR&(1<<6))
-				HAL_UART_Transmit(&huart2, "2", 1, 100);
-			else if(GPIOA->ODR&(1<<7))
-				HAL_UART_Transmit(&huart2, "3", 1, 100);
+			if(GPIOA->ODR&(1<<1))
+				HAL_UART_Transmit(&huart2, "4", 1, TIMEOUT);
+			else if(GPIOA->ODR&(1<<2))
+				HAL_UART_Transmit(&huart2, "5", 1, TIMEOUT);
+			else if(GPIOA->ODR&(1<<3))
+				HAL_UART_Transmit(&huart2, "6", 1, TIMEOUT);
 		}
-		else if(GPIO_Pin==(1<<4))	//row 4
+		else if(GPIO_Pin==(1<<7))	//row 4
 		{
-			if(GPIOA->ODR&(1<<5))
-				HAL_UART_Transmit(&huart2, "*", 1, 100);
-			else if(GPIOA->ODR&(1<<6))
-				HAL_UART_Transmit(&huart2, "0", 1, 100);
-			else if(GPIOA->ODR&(1<<7))
-				HAL_UART_Transmit(&huart2, "#", 1, 100);
+			if(GPIOA->ODR&(1<<1))
+				HAL_UART_Transmit(&huart2, "7", 1, TIMEOUT);
+			else if(GPIOA->ODR&(1<<2))
+				HAL_UART_Transmit(&huart2, "8", 1, TIMEOUT);
+			else if(GPIOA->ODR&(1<<3))
+				HAL_UART_Transmit(&huart2, "9", 1, TIMEOUT);
 		}
+		else if(GPIO_Pin==(1<<8))	//row 5
+		{
+			if(GPIOA->ODR&(1<<1))
+				HAL_UART_Transmit(&huart2, "L", 1, TIMEOUT);	//Left
+			else if(GPIOA->ODR&(1<<2))
+				HAL_UART_Transmit(&huart2, "D", 1, TIMEOUT);	//Down
+			else if(GPIOA->ODR&(1<<3))
+				HAL_UART_Transmit(&huart2, "R", 1, TIMEOUT);	//Right
+		}
+		else if(GPIO_Pin==(1<<9))	//row 6
+		{
+			if(GPIOA->ODR&(1<<1))
+				HAL_UART_Transmit(&huart2, "A", 1, TIMEOUT);
+			else if(GPIOA->ODR&(1<<2))
+				HAL_UART_Transmit(&huart2, "U", 1, TIMEOUT);
+			else if(GPIOA->ODR&(1<<3))
+				HAL_UART_Transmit(&huart2, "B", 1, TIMEOUT);
+		}
+		else if(GPIO_Pin==(1<<10))	//F1 press
+		{
+			HAL_UART_Transmit(&huart2, "C", 1, TIMEOUT);
+		}
+		else if(GPIO_Pin==(1<11))	//F2 press
+		{
+			HAL_UART_Transmit(&huart2, "D", 1, TIMEOUT);
+		}
+
 		pressed=1;
 		HAL_TIM_Base_Stop_IT(&htim2);
 	}
@@ -153,16 +194,15 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 
 /**
   * @brief  The application entry point.
-  *
-  * @retval None
+  * @retval int
   */
 int main(void)
 {
   /* USER CODE BEGIN 1 */
-	uint8_t last=0;
+
   /* USER CODE END 1 */
 
-  /* MCU Configuration----------------------------------------------------------*/
+  /* MCU Configuration--------------------------------------------------------*/
 
   /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
   HAL_Init();
@@ -181,44 +221,22 @@ int main(void)
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
   MX_USART2_UART_Init();
-  MX_TIM21_Init();
   MX_TIM2_Init();
   /* USER CODE BEGIN 2 */
-  GPIOA->BSRR=(1<<(5+16))|(1<<(6+16))|(1<<(7+16));
+  GPIOA->BSRR=(1<<1)|(1<<2)|(1<<3);
   HAL_TIM_Base_Start_IT(&htim2);
-  HAL_TIM_Encoder_Start(&htim21, TIM_CHANNEL_ALL);
-  TIM21->CNT=23;
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while(1)
   {
-	  enc_now=TIM21->CNT;
+	  ;
+    /* USER CODE END WHILE */
 
-	  if(enc_now>=23+4)
-	  {
-		  TIM21->CNT=23;
-		  HAL_UART_Transmit(&huart2, "L", 1, 100);
-	  }
-	  else if(enc_now<=23-4)
-	  {
-		  TIM21->CNT=23;
-		  HAL_UART_Transmit(&huart2, "R", 1, 100);
-	  }
-
-	  last=GPIOB->IDR&((1<<5)|(1<<4));
-	  HAL_Delay(1);
-	  if(!(GPIOB->IDR&(1<<5)) && (last&(1<<5)))	//falling edge on B1
-		  HAL_UART_Transmit(&huart2, "A", 1, 100);
-	  else if(!(GPIOB->IDR&(1<<4)) && (last&(1<<4)))	//falling edge on B2
-		  HAL_UART_Transmit(&huart2, "B", 1, 100);
-  /* USER CODE END WHILE */
-
-  /* USER CODE BEGIN 3 */
+    /* USER CODE BEGIN 3 */
   }
   /* USER CODE END 3 */
-
 }
 
 /**
@@ -227,17 +245,15 @@ int main(void)
   */
 void SystemClock_Config(void)
 {
+  RCC_OscInitTypeDef RCC_OscInitStruct = {0};
+  RCC_ClkInitTypeDef RCC_ClkInitStruct = {0};
+  RCC_PeriphCLKInitTypeDef PeriphClkInit = {0};
 
-  RCC_OscInitTypeDef RCC_OscInitStruct;
-  RCC_ClkInitTypeDef RCC_ClkInitStruct;
-  RCC_PeriphCLKInitTypeDef PeriphClkInit;
-
-    /**Configure the main internal regulator output voltage 
-    */
+  /**Configure the main internal regulator output voltage 
+  */
   __HAL_PWR_VOLTAGESCALING_CONFIG(PWR_REGULATOR_VOLTAGE_SCALE1);
-
-    /**Initializes the CPU, AHB and APB busses clocks 
-    */
+  /**Initializes the CPU, AHB and APB busses clocks 
+  */
   RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSE;
   RCC_OscInitStruct.HSEState = RCC_HSE_BYPASS;
   RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
@@ -246,11 +262,10 @@ void SystemClock_Config(void)
   RCC_OscInitStruct.PLL.PLLDIV = RCC_PLLDIV_2;
   if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
   {
-    _Error_Handler(__FILE__, __LINE__);
+    Error_Handler();
   }
-
-    /**Initializes the CPU, AHB and APB busses clocks 
-    */
+  /**Initializes the CPU, AHB and APB busses clocks 
+  */
   RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK|RCC_CLOCKTYPE_SYSCLK
                               |RCC_CLOCKTYPE_PCLK1|RCC_CLOCKTYPE_PCLK2;
   RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
@@ -260,99 +275,76 @@ void SystemClock_Config(void)
 
   if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_1) != HAL_OK)
   {
-    _Error_Handler(__FILE__, __LINE__);
+    Error_Handler();
   }
-
   PeriphClkInit.PeriphClockSelection = RCC_PERIPHCLK_USART2;
   PeriphClkInit.Usart2ClockSelection = RCC_USART2CLKSOURCE_PCLK1;
   if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInit) != HAL_OK)
   {
-    _Error_Handler(__FILE__, __LINE__);
+    Error_Handler();
   }
-
-    /**Configure the Systick interrupt time 
-    */
-  HAL_SYSTICK_Config(HAL_RCC_GetHCLKFreq()/1000);
-
-    /**Configure the Systick 
-    */
-  HAL_SYSTICK_CLKSourceConfig(SYSTICK_CLKSOURCE_HCLK);
-
-  /* SysTick_IRQn interrupt configuration */
-  HAL_NVIC_SetPriority(SysTick_IRQn, 0, 0);
 }
 
-/* TIM2 init function */
+/**
+  * @brief TIM2 Initialization Function
+  * @param None
+  * @retval None
+  */
 static void MX_TIM2_Init(void)
 {
 
-  TIM_ClockConfigTypeDef sClockSourceConfig;
-  TIM_MasterConfigTypeDef sMasterConfig;
+  /* USER CODE BEGIN TIM2_Init 0 */
 
+  /* USER CODE END TIM2_Init 0 */
+
+  TIM_ClockConfigTypeDef sClockSourceConfig = {0};
+  TIM_MasterConfigTypeDef sMasterConfig = {0};
+
+  /* USER CODE BEGIN TIM2_Init 1 */
+
+  /* USER CODE END TIM2_Init 1 */
   htim2.Instance = TIM2;
   htim2.Init.Prescaler = 0;
   htim2.Init.CounterMode = TIM_COUNTERMODE_UP;
   htim2.Init.Period = 31999;
   htim2.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
+  htim2.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
   if (HAL_TIM_Base_Init(&htim2) != HAL_OK)
   {
-    _Error_Handler(__FILE__, __LINE__);
+    Error_Handler();
   }
-
   sClockSourceConfig.ClockSource = TIM_CLOCKSOURCE_INTERNAL;
   if (HAL_TIM_ConfigClockSource(&htim2, &sClockSourceConfig) != HAL_OK)
   {
-    _Error_Handler(__FILE__, __LINE__);
+    Error_Handler();
   }
-
   sMasterConfig.MasterOutputTrigger = TIM_TRGO_UPDATE;
   sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
   if (HAL_TIMEx_MasterConfigSynchronization(&htim2, &sMasterConfig) != HAL_OK)
   {
-    _Error_Handler(__FILE__, __LINE__);
+    Error_Handler();
   }
+  /* USER CODE BEGIN TIM2_Init 2 */
+
+  /* USER CODE END TIM2_Init 2 */
 
 }
 
-/* TIM21 init function */
-static void MX_TIM21_Init(void)
-{
-
-  TIM_Encoder_InitTypeDef sConfig;
-  TIM_MasterConfigTypeDef sMasterConfig;
-
-  htim21.Instance = TIM21;
-  htim21.Init.Prescaler = 0;
-  htim21.Init.CounterMode = TIM_COUNTERMODE_UP;
-  htim21.Init.Period = 47;
-  htim21.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
-  sConfig.EncoderMode = TIM_ENCODERMODE_TI12;
-  sConfig.IC1Polarity = TIM_ICPOLARITY_RISING;
-  sConfig.IC1Selection = TIM_ICSELECTION_DIRECTTI;
-  sConfig.IC1Prescaler = TIM_ICPSC_DIV1;
-  sConfig.IC1Filter = 0;
-  sConfig.IC2Polarity = TIM_ICPOLARITY_RISING;
-  sConfig.IC2Selection = TIM_ICSELECTION_DIRECTTI;
-  sConfig.IC2Prescaler = TIM_ICPSC_DIV1;
-  sConfig.IC2Filter = 0;
-  if (HAL_TIM_Encoder_Init(&htim21, &sConfig) != HAL_OK)
-  {
-    _Error_Handler(__FILE__, __LINE__);
-  }
-
-  sMasterConfig.MasterOutputTrigger = TIM_TRGO_RESET;
-  sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
-  if (HAL_TIMEx_MasterConfigSynchronization(&htim21, &sMasterConfig) != HAL_OK)
-  {
-    _Error_Handler(__FILE__, __LINE__);
-  }
-
-}
-
-/* USART2 init function */
+/**
+  * @brief USART2 Initialization Function
+  * @param None
+  * @retval None
+  */
 static void MX_USART2_UART_Init(void)
 {
 
+  /* USER CODE BEGIN USART2_Init 0 */
+
+  /* USER CODE END USART2_Init 0 */
+
+  /* USER CODE BEGIN USART2_Init 1 */
+
+  /* USER CODE END USART2_Init 1 */
   huart2.Instance = USART2;
   huart2.Init.BaudRate = 9600;
   huart2.Init.WordLength = UART_WORDLENGTH_8B;
@@ -365,56 +357,52 @@ static void MX_USART2_UART_Init(void)
   huart2.AdvancedInit.AdvFeatureInit = UART_ADVFEATURE_NO_INIT;
   if (HAL_UART_Init(&huart2) != HAL_OK)
   {
-    _Error_Handler(__FILE__, __LINE__);
+    Error_Handler();
   }
+  /* USER CODE BEGIN USART2_Init 2 */
+
+  /* USER CODE END USART2_Init 2 */
 
 }
 
-/** Configure pins as 
-        * Analog 
-        * Input 
-        * Output
-        * EVENT_OUT
-        * EXTI
-*/
+/**
+  * @brief GPIO Initialization Function
+  * @param None
+  * @retval None
+  */
 static void MX_GPIO_Init(void)
 {
-
-  GPIO_InitTypeDef GPIO_InitStruct;
+  GPIO_InitTypeDef GPIO_InitStruct = {0};
 
   /* GPIO Ports Clock Enable */
   __HAL_RCC_GPIOA_CLK_ENABLE();
   __HAL_RCC_GPIOB_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOA, C1_Pin|C2_Pin|C3_Pin, GPIO_PIN_RESET);
-
-  /*Configure GPIO pins : R1_Pin R2_Pin R3_Pin R4_Pin */
-  GPIO_InitStruct.Pin = R1_Pin|R2_Pin|R3_Pin|R4_Pin;
-  GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING_FALLING;
-  GPIO_InitStruct.Pull = GPIO_PULLDOWN;
-  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+  HAL_GPIO_WritePin(GPIOA, C1_Pin|C2_Pin|C3_Pin, GPIO_PIN_SET);
 
   /*Configure GPIO pins : C1_Pin C2_Pin C3_Pin */
   GPIO_InitStruct.Pin = C1_Pin|C2_Pin|C3_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
-  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
   HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
-  /*Configure GPIO pins : B2_Pin B1_Pin */
-  GPIO_InitStruct.Pin = B2_Pin|B1_Pin;
-  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
-  GPIO_InitStruct.Pull = GPIO_PULLUP;
-  HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+  /*Configure GPIO pins : R1_Pin R2_Pin R3_Pin R4_Pin 
+                           R5_Pin R6_Pin */
+  GPIO_InitStruct.Pin = R1_Pin|R2_Pin|R3_Pin|R4_Pin 
+                          |R5_Pin|R6_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING_FALLING;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+
+  /*Configure GPIO pins : F1_Pin F2_Pin */
+  GPIO_InitStruct.Pin = F1_Pin|F2_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_IT_FALLING;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
   /* EXTI interrupt init*/
-  HAL_NVIC_SetPriority(EXTI0_1_IRQn, 0, 0);
-  HAL_NVIC_EnableIRQ(EXTI0_1_IRQn);
-
-  HAL_NVIC_SetPriority(EXTI2_3_IRQn, 0, 0);
-  HAL_NVIC_EnableIRQ(EXTI2_3_IRQn);
-
   HAL_NVIC_SetPriority(EXTI4_15_IRQn, 0, 0);
   HAL_NVIC_EnableIRQ(EXTI4_15_IRQn);
 
@@ -426,11 +414,9 @@ static void MX_GPIO_Init(void)
 
 /**
   * @brief  This function is executed in case of error occurrence.
-  * @param  file: The file name as string.
-  * @param  line: The line in file as a number.
   * @retval None
   */
-void _Error_Handler(char *file, int line)
+void Error_Handler(void)
 {
   /* USER CODE BEGIN Error_Handler_Debug */
   /* User can add his own implementation to report the HAL error return state */
@@ -446,7 +432,7 @@ void _Error_Handler(char *file, int line)
   * @param  line: assert_param error line source number
   * @retval None
   */
-void assert_failed(uint8_t* file, uint32_t line)
+void assert_failed(uint8_t *file, uint32_t line)
 { 
   /* USER CODE BEGIN 6 */
   /* User can add his own implementation to report the file name and line number,
@@ -454,13 +440,5 @@ void assert_failed(uint8_t* file, uint32_t line)
   /* USER CODE END 6 */
 }
 #endif /* USE_FULL_ASSERT */
-
-/**
-  * @}
-  */
-
-/**
-  * @}
-  */
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

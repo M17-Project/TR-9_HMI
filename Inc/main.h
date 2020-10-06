@@ -1,3 +1,4 @@
+/* USER CODE BEGIN Header */
 /**
   ******************************************************************************
   * @file           : main.h
@@ -10,7 +11,7 @@
   * inserted by the user or by software development tools
   * are owned by their respective copyright owners.
   *
-  * COPYRIGHT(c) 2019 STMicroelectronics
+  * COPYRIGHT(c) 2020 STMicroelectronics
   *
   * Redistribution and use in source and binary forms, with or without modification,
   * are permitted provided that the following conditions are met:
@@ -36,63 +37,85 @@
   *
   ******************************************************************************
   */
+/* USER CODE END Header */
 
 /* Define to prevent recursive inclusion -------------------------------------*/
-#ifndef __MAIN_H__
-#define __MAIN_H__
+#ifndef __MAIN_H
+#define __MAIN_H
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /* Includes ------------------------------------------------------------------*/
+#include "stm32l0xx_hal.h"
 
+/* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 
 /* USER CODE END Includes */
 
-/* Private define ------------------------------------------------------------*/
+/* Exported types ------------------------------------------------------------*/
+/* USER CODE BEGIN ET */
 
-#define R1_Pin GPIO_PIN_1
+/* USER CODE END ET */
+
+/* Exported constants --------------------------------------------------------*/
+/* USER CODE BEGIN EC */
+
+/* USER CODE END EC */
+
+/* Exported macro ------------------------------------------------------------*/
+/* USER CODE BEGIN EM */
+
+/* USER CODE END EM */
+
+/* Exported functions prototypes ---------------------------------------------*/
+void Error_Handler(void);
+
+/* USER CODE BEGIN EFP */
+
+/* USER CODE END EFP */
+
+/* Private defines -----------------------------------------------------------*/
+#define C1_Pin GPIO_PIN_1
+#define C1_GPIO_Port GPIOA
+#define C2_Pin GPIO_PIN_2
+#define C2_GPIO_Port GPIOA
+#define C3_Pin GPIO_PIN_3
+#define C3_GPIO_Port GPIOA
+#define R1_Pin GPIO_PIN_4
 #define R1_GPIO_Port GPIOA
-#define R1_EXTI_IRQn EXTI0_1_IRQn
-#define R2_Pin GPIO_PIN_2
+#define R1_EXTI_IRQn EXTI4_15_IRQn
+#define R2_Pin GPIO_PIN_5
 #define R2_GPIO_Port GPIOA
-#define R2_EXTI_IRQn EXTI2_3_IRQn
-#define R3_Pin GPIO_PIN_3
+#define R2_EXTI_IRQn EXTI4_15_IRQn
+#define R3_Pin GPIO_PIN_6
 #define R3_GPIO_Port GPIOA
-#define R3_EXTI_IRQn EXTI2_3_IRQn
-#define R4_Pin GPIO_PIN_4
+#define R3_EXTI_IRQn EXTI4_15_IRQn
+#define R4_Pin GPIO_PIN_7
 #define R4_GPIO_Port GPIOA
 #define R4_EXTI_IRQn EXTI4_15_IRQn
-#define C1_Pin GPIO_PIN_5
-#define C1_GPIO_Port GPIOA
-#define C2_Pin GPIO_PIN_6
-#define C2_GPIO_Port GPIOA
-#define C3_Pin GPIO_PIN_7
-#define C3_GPIO_Port GPIOA
-#define B2_Pin GPIO_PIN_4
-#define B2_GPIO_Port GPIOB
-#define B1_Pin GPIO_PIN_5
-#define B1_GPIO_Port GPIOB
-
-/* ########################## Assert Selection ############################## */
-/**
-  * @brief Uncomment the line below to expanse the "assert_param" macro in the 
-  *        HAL drivers code
-  */
-/* #define USE_FULL_ASSERT    1U */
-
+#define R5_Pin GPIO_PIN_8
+#define R5_GPIO_Port GPIOA
+#define R5_EXTI_IRQn EXTI4_15_IRQn
+#define R6_Pin GPIO_PIN_9
+#define R6_GPIO_Port GPIOA
+#define R6_EXTI_IRQn EXTI4_15_IRQn
+#define F1_Pin GPIO_PIN_10
+#define F1_GPIO_Port GPIOA
+#define F1_EXTI_IRQn EXTI4_15_IRQn
+#define F2_Pin GPIO_PIN_11
+#define F2_GPIO_Port GPIOA
+#define F2_EXTI_IRQn EXTI4_15_IRQn
 /* USER CODE BEGIN Private defines */
 
 /* USER CODE END Private defines */
 
 #ifdef __cplusplus
- extern "C" {
-#endif
-void _Error_Handler(char *, int);
-
-#define Error_Handler() _Error_Handler(__FILE__, __LINE__)
-#ifdef __cplusplus
 }
 #endif
 
-#endif /* __MAIN_H__ */
+#endif /* __MAIN_H */
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
