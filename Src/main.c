@@ -157,11 +157,11 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 		}
 		else if(GPIO_Pin==(1<<10))	//F1 press
 		{
-			HAL_UART_Transmit(&huart2, "C", 1, TIMEOUT);
+			HAL_UART_Transmit(&huart2, "X", 1, TIMEOUT);
 		}
 		else if(GPIO_Pin==(1<<11))	//F2 press
 		{
-			HAL_UART_Transmit(&huart2, "D", 1, TIMEOUT);
+			HAL_UART_Transmit(&huart2, "Y", 1, TIMEOUT);
 		}
 
 		pressed=1;
